@@ -2,7 +2,9 @@ require File.expand_path '../test_helper.rb', __FILE__
 
 class ValidatorTest < MiniTest::Test
   def app; Sinatra::Application; end
-  def cases; [['voice', 'get'], ['deliver', 'post'], ['sms', 'post']]; end
+  def cases
+    [['voice', 'get'], ['record', 'post'], ['deliver', 'post'], ['sms', 'post']]
+  end
 
   def test_wrong_number
     cases.each do |route, method|

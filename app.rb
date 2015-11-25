@@ -44,9 +44,24 @@ before "/sms/*" do
 end
 
 get '/voice/:dialed_number' do
+  record_url = "/record/#{params[:dialed_number]}"
   Twilio::TwiML::Response.new do |r|
-    r.Say "Hello, thanks for calling. To leave a message, press 5."
-    r.Record :action => "/deliver/#{params[:dialed_number]}", :method => "get"
+    r.Gather :action => record_url, :numDigits => 1 do |d|
+      d.Say "Hello, thanks for calling. To leave a message, press 5."
+    end
+    r.Say "I'm sorry, I didn't receive your message. Goodbye!"
+    r.Hangup
+  end.text
+end
+
+post '/record/:dialed_number' do
+  Twilio::TwiML::Response.new do |r|
+    if params[:Digits] == '5'
+      r.Record :action => "/deliver/#{params[:dialed_number]}"
+    else
+      r.Say "I'm sorry, I didn't receive your message. Goodbye!"
+      r.Hangup
+    end
   end.text
 end
 
@@ -61,7 +76,7 @@ post '/deliver/:dialed_number' do
   Message.new(options).deliver!
 
   Twilio::TwiML::Response.new do |r|
-    r.Say "Thank you for calling. Bye!"
+    r.Say "I've delivered your message. Goodbye!"
     r.Hangup
   end.text
 end
