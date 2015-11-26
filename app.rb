@@ -6,6 +6,7 @@ require 'open-uri'
 require 'dotenv'
 require_relative 'lib/message'
 require_relative 'lib/config'
+require_relative 'lib/response'
 Dotenv.overload('.env.local', '.env', ".env.#{ENV['RACK_ENV']}")
 
 configure do
@@ -45,28 +46,11 @@ end
 
 get '/voice/:dialed_number' do
   record_url = "/record/#{params[:dialed_number]}"
-  Twilio::TwiML::Response.new do |r|
-    r.Gather :action => record_url, :numDigits => 1 do |d|
-      if ENV['MP3_GREETING']
-        d.Play ENV['MP3_GREETING']
-      else
-        d.Say ENV['SAY_MESSAGE']
-      end
-    end
-    r.Say "I'm sorry, I didn't receive your message. Goodbye!"
-    r.Hangup
-  end.text
+  Response.voice(record_url)
 end
 
 post '/record/:dialed_number' do
-  Twilio::TwiML::Response.new do |r|
-    if params[:Digits] == '5'
-      r.Record :action => "/deliver/#{params[:dialed_number]}"
-    else
-      r.Say "I'm sorry, I didn't receive your message. Goodbye!"
-      r.Hangup
-    end
-  end.text
+  Response.record(params)
 end
 
 post '/deliver/:dialed_number' do
@@ -79,10 +63,7 @@ post '/deliver/:dialed_number' do
   }.merge(Config.number_configuration(params[:dialed_number])[:voice])
   Message.new(options).deliver!
 
-  Twilio::TwiML::Response.new do |r|
-    r.Say "I've delivered your message. Goodbye!"
-    r.Hangup
-  end.text
+  Response.deliver
 end
 
 post '/sms/:dialed_number' do
