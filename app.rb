@@ -47,7 +47,11 @@ get '/voice/:dialed_number' do
   record_url = "/record/#{params[:dialed_number]}"
   Twilio::TwiML::Response.new do |r|
     r.Gather :action => record_url, :numDigits => 1 do |d|
-      d.Say "Hello, thanks for calling. To leave a message, press 5."
+      if ENV['MP3_GREETING']
+        d.Play ENV['MP3_GREETING']
+      else
+        d.Say ENV['SAY_MESSAGE']
+      end
     end
     r.Say "I'm sorry, I didn't receive your message. Goodbye!"
     r.Hangup
