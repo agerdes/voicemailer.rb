@@ -2,7 +2,7 @@ require File.expand_path '../test_helper.rb', __FILE__
 
 class Voicemailer < MiniTest::Test
   def app; Sinatra::Application; end
-  def file_path; "test/fixtures/chime"; end
+  def file_path; "https://www.example.com/logo.png"; end
 
   def test_deliver
     params = { :RecordingDuration => 123, :RecordingUrl => file_path }
