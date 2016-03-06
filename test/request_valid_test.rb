@@ -27,7 +27,7 @@ class ValidatorTest < MiniTest::Test
   end
 
   def test_deliver_no_file
-    params = { :RecordingDuration => "123", :RecordingUrl => "not/a/file" }
+    params = { :RecordingDuration => "123" }
     post_signed "/deliver/#{test_number}", params
     assert_equal 400, last_response.status
   end

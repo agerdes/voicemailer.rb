@@ -7,6 +7,7 @@ require 'dotenv'
 require_relative 'lib/message'
 require_relative 'lib/config'
 require_relative 'lib/response'
+require_relative 'lib/recording'
 Dotenv.overload('.env.local', '.env', ".env.#{ENV['RACK_ENV']}")
 
 configure do
@@ -41,7 +42,9 @@ before "/*/:dialed_number" do
 end
 
 before "/deliver/*" do
-  error 400 unless ['RecordingDuration', 'RecordingUrl'].all? { |s| params.key? s }
+  error 400 unless ['RecordingDuration', 'RecordingUrl'].all? do |s|
+    params.key? s
+  end
 end
 
 before "/sms/*" do
@@ -58,15 +61,16 @@ post '/record/:dialed_number' do
 end
 
 post '/deliver/:dialed_number' do
-  file_url = "#{params[:RecordingUrl]}.mp3"
-  error 400 unless File.exist?(file_url)
+  recording_path = nil
+  if recording = Recording.new(params[:RecordingUrl])
+    recording_path = recording.file_path
+  end
   options = {
     subject: "Voicemail at #{Time.now.to_s}",
-    body: "Message length: #{params[:RecordingDuration]}",
-    file_url: file_url
+    body: "Message length: #{params[:RecordingDuration]} seconds\n\n",
+    recording_path: recording_path
   }.merge(Config.number_configuration(params[:dialed_number])[:voice])
   Message.new(options).deliver!
-
   Response.deliver
 end
 

@@ -14,6 +14,23 @@ Mail.defaults do
   delivery_method :test
 end
 
+class FakeHTTP
+  FakeResponse = Struct.new(:version, :code, :message, :body) do
+    def read_body
+      return yield(body)
+    end
+  end
+
+  def self.start
+    return self
+  end
+
+  def self.request_get(url)
+    file = File.read("test/fixtures/chime.mp3")
+    return yield(FakeResponse.new(1.0, 200, "OK", file))
+  end
+end
+
 def sample_file(filename = "sample_file.png")
   File.new("test/fixtures/#{filename}")
 end

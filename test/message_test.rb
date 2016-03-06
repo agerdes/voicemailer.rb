@@ -9,7 +9,7 @@ class MessageTest < MiniTest::Test
       body: 'Hello there!',
       to: 'test@gmail.com',
       from: 'test@gmail.com',
-      file_url: @attachment_path
+      recording_path: @attachment_path
     }
     Message.new(@options).deliver!
     @mail = Mail::TestMailer.deliveries.first
