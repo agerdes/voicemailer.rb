@@ -31,6 +31,10 @@ helpers do
   end
 end
 
+before do
+  content_type 'text/xml'
+end
+
 before "/*/:dialed_number" do
   error 404 unless request_is_for_valid_number?
   error 401 unless request_is_from_twilio?
