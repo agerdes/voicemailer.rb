@@ -1,4 +1,8 @@
 module Config
+  def auth_token
+    return ENV['TWILIO_AUTH_TOKEN']
+  end
+
   def remove_key_smtp(k)
     k[5..-1].downcase.to_sym
   end

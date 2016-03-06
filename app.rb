@@ -12,7 +12,7 @@ Dotenv.overload('.env.local', '.env', ".env.#{ENV['RACK_ENV']}")
 configure do
   include Config
   set :numbers, Config.numbers
-  set :validator, Twilio::Util::RequestValidator.new('test')
+  set :validator, Twilio::Util::RequestValidator.new(Config.auth_token)
   settings.numbers.each do |n|
     set "config_for_#{n.to_s}", Config.number_configuration(n)
   end
