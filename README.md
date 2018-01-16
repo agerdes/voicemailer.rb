@@ -1,16 +1,24 @@
+># Here for a work sample?
+>Thanks for taking a look at my code! This project sends SMS and voicemails from my US phone number to my email while I'm traveling abroad.
+>
+>
+>## Design goals for this project
+>:white_check_mark: Include no persistent state for easy redundancy by running multiple environments round-robin-style
+>
+>:white_check_mark: Simple configuration via a YAML file for sharing with friends who want to run the project
+>
+>:white_check_mark: Easy-to-test core libraries and appropriate test suite
+>
+>:white_check_mark: Authenticate all API traffic from Twilio
+>
+> 
+>## Where to start
+>* [lib/response.rb](lib/response.rb) generates TwiML, Twilio's XML instruction set for answering calls, requiring number keys ("press 5 to leave a message"), and recording audio. The Response.build method handles the boilerplate for generating TwiML, while the other methods are called from [app.rb](app.rb)
+>* [The test suite](test/) covers success and failure cases of the app's functionality and includes helpers to mock Twilio's request-signing functionality.
+
+
 # voicemailer.rb
 Voicemail-to-email and SMS-to-email, backed by Twilio.
-
-## Here for a work sample?
-Thanks for taking a look at my code! This project sends SMS and voicemails from my US phone number to my email while I'm traveling abroad.
-
-### Design goals for this project
-:white_check_mark: Include no persistent state so that it may be run redundantly in multiple environments
-
-:white_check_mark: Simple configuration via a YAML file
-
-:white_check_mark: Easy-to-test core libraries and appropriate test suite
-
 
 
 ## Getting Started
@@ -42,4 +50,4 @@ rake test
 If all assertions run with no failures, you've successfully installed the project to your local environment!
 
 
-(c) Aaron Gerdes. All rights reserved.
+Copyright (c) Aaron Gerdes. All rights reserved.
